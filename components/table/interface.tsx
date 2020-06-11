@@ -147,6 +147,7 @@ export interface TableRowSelection<T> {
   fixed?: boolean;
   columnWidth?: string | number;
   columnTitle?: string | React.ReactNode;
+  checkStrictly?: boolean;
   renderCell?: (
     value: boolean,
     record: T,
