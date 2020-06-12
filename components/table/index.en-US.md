@@ -185,6 +185,7 @@ Properties for row selection.
 
 | Property | Description | Type | Default | Version |
 | --- | --- | --- | --- | --- |
+| checkStrictly |  | boolean | `true` |  |
 | columnWidth | Set the width of the selection column | string\|number | `60px` |  |
 | columnTitle | Set the title of the selection column | string\|ReactNode | - |  |
 | fixed | Fixed selection column on the left | boolean | - |  |
