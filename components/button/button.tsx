@@ -12,8 +12,11 @@ import SizeContext, { SizeType } from '../config-provider/SizeContext';
 import LoadingIcon from './LoadingIcon';
 import { cloneElement } from '../_util/reactNode';
 
+// 判断是否是两个中文
 const rxTwoCNChar = /^[\u4e00-\u9fa5]{2}$/;
 const isTwoCNChar = rxTwoCNChar.test.bind(rxTwoCNChar);
+
+// 判断 string
 function isString(str: any) {
   return typeof str === 'string';
 }
@@ -68,6 +71,7 @@ function spaceChildren(children: React.ReactNode, needInserted: boolean) {
   );
 }
 
+// 定义一些类型
 const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
 export type ButtonType = typeof ButtonTypes[number];
 const ButtonShapes = tuple('circle', 'circle-outline', 'round');
@@ -144,8 +148,14 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
   const [hasTwoCNChar, setHasTwoCNChar] = React.useState(false);
   const { getPrefixCls, autoInsertSpaceInButton, direction } = React.useContext(ConfigContext);
   const buttonRef = (ref as any) || React.createRef<HTMLElement>();
+
+  // 使用 useRef 来储存定时器变量
+  // useRef 和 createRef: https://zhuanlan.zhihu.com/p/105276393
+  // 注意：setTimeout 返回值timeoutID是一个正整数，表示定时器的编号。这个值可以传递给clearTimeout()来取消该定时器。
+  // 所以这里 useRef 的类型是 number
   const delayTimeoutRef = React.useRef<number>();
 
+  // 两个中文添加空格
   const isNeedInserted = () => {
     return React.Children.count(children) === 1 && !icon && type !== 'link' && type !== 'text';
   };
