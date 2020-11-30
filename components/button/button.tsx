@@ -22,6 +22,7 @@ function isString(str: any) {
 }
 
 // Insert one space between two chinese characters automatically.
+// 自动在两个汉字之间插入空格
 function insertSpace(child: React.ReactChild, needInserted: boolean) {
   // Check the child if is undefined or null.
   if (child == null) {
@@ -35,6 +36,7 @@ function insertSpace(child: React.ReactChild, needInserted: boolean) {
     isString(child.type) &&
     isTwoCNChar(child.props.children)
   ) {
+    // React.cloneElement: https://fullstackbb.com/react/when-to-use-react-cloneelement/
     return cloneElement(child, {
       children: child.props.children.split('').join(SPACE),
     });
@@ -143,10 +145,19 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     ...rest
   } = props;
 
+  // 这里是通过 ConfigProvider 全局配置的 size
   const size = React.useContext(SizeContext);
+
+  // button 内部的 loading 状态
   const [innerLoading, setLoading] = React.useState<Loading>(!!loading);
+
+  // 是否是 两个中文字符
   const [hasTwoCNChar, setHasTwoCNChar] = React.useState(false);
+
+  // 获取一些全局的配置：包括 prefixCls: 统一的样式前缀、autoInsertSpaceInButton: 移除按钮中两个汉字之间的空格、direction：文本展示方向
   const { getPrefixCls, autoInsertSpaceInButton, direction } = React.useContext(ConfigContext);
+
+  // createRef
   const buttonRef = (ref as any) || React.createRef<HTMLElement>();
 
   // 使用 useRef 来储存定时器变量
@@ -198,8 +209,11 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     fixTwoCNChar();
   }, [buttonRef]);
 
+  // 处理 onClick 点击事件
   const handleClick = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement, MouseEvent>) => {
     const { onClick } = props;
+
+    // 如果是 loading 就不触发 onClick 事件
     if (innerLoading) {
       return;
     }

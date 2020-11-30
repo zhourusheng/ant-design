@@ -124,6 +124,8 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   } = props;
 
   const screens = useBreakpoint();
+
+  // 处理传入的 colums
   const mergedColumns = React.useMemo(() => {
     const matched = new Set(Object.keys(screens).filter((m: Breakpoint) => screens[m]));
 
@@ -139,8 +141,11 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   const { locale: contextLocale = defaultLocale, renderEmpty, direction } = React.useContext(
     ConfigContext,
   );
+  // size 处理
   const mergedSize = customizeSize || size;
   const tableLocale = { ...contextLocale.Table, ...locale } as TableLocale;
+
+  // dataSource 默认值处理
   const rawData: RecordType[] = dataSource || EMPTY_LIST;
 
   const { getPrefixCls } = React.useContext(ConfigContext);
@@ -416,6 +421,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
         size={paginationSize}
       />
     );
+
     const defaultPosition = direction === 'rtl' ? 'left' : 'right';
     if (mergedPagination.position !== null && Array.isArray(mergedPagination.position)) {
       const topPos = mergedPagination.position.find(p => p.indexOf('top') !== -1);
