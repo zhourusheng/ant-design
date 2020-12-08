@@ -12,6 +12,7 @@
   .reset-component;
 
   display: inline-block;
+  font-size: 0;
   line-height: unset;
 
   .@{ant-prefix}-badge-count {
@@ -77,11 +78,9 @@
 
   &-inner {
     &::after {
-      @radio-dot-size: @radio-size - 8px;
-
       position: absolute;
-      top: (@radio-size - @radio-dot-size) / 2 - 1px;
-      left: (@radio-size - @radio-dot-size) / 2 - 1px;
+      top: (@radio-size - @radio-dot-size) / 2 - @radio-border-width;
+      left: (@radio-size - @radio-dot-size) / 2 - @radio-border-width;
       display: table;
       width: @radio-dot-size;
       height: @radio-dot-size;
@@ -104,8 +103,8 @@
     background-color: @radio-button-bg;
     border-color: @border-color-base;
     border-style: solid;
-    border-width: 1px;
-    border-radius: 100px;
+    border-width: @radio-border-width;
+    border-radius: 50%;
     transition: all @radio-duration;
   }
 
@@ -134,6 +133,8 @@
 }
 
 .@{radio-prefix-cls}-disabled {
+  cursor: not-allowed;
+
   .@{radio-inner-prefix-cls} {
     background-color: @input-disabled-bg;
     border-color: @border-color-base !important;
@@ -165,6 +166,7 @@ span.@{radio-prefix-cls} + * {
   margin: 0;
   padding: 0 @padding-md - 1px;
   color: @radio-button-color;
+  font-size: @font-size-base;
   line-height: @btn-height-base - 2px;
   background: @radio-button-bg;
   border: @border-width-base @border-style-base @border-color-base;
@@ -180,10 +182,12 @@ span.@{radio-prefix-cls} + * {
   }
 
   > .@{radio-prefix-cls}-button {
-    display: block;
-    width: 0;
-    height: 0;
-    margin-left: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
   }
 
   .@{radio-group-prefix-cls}-large & {

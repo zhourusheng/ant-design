@@ -11,6 +11,9 @@ import stackblitzSdk from '@stackblitz/sdk';
 import CodePreview from './CodePreview';
 import EditButton from '../EditButton';
 import BrowserFrame from '../../BrowserFrame';
+import CodeSandboxIcon from './CodeSandboxIcon';
+import CodePenIcon from './CodePenIcon';
+import RiddleIcon from './RiddleIcon';
 
 const { ErrorBoundary } = Alert;
 
@@ -23,6 +26,12 @@ function compress(string) {
 
 class Demo extends React.Component {
   iframeRef = React.createRef();
+
+  codeSandboxIconRef = React.createRef();
+
+  riddleIconRef = React.createRef();
+
+  codepenIconRef = React.createRef();
 
   state = {
     codeExpand: false,
@@ -39,12 +48,13 @@ class Demo extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { codeExpand, copied, copyTooltipVisible } = this.state;
-    const { expand, theme } = this.props;
+    const { expand, theme, showRiddleButton } = this.props;
     return (
       (codeExpand || expand) !== (nextState.codeExpand || nextProps.expand) ||
       copied !== nextState.copied ||
       copyTooltipVisible !== nextState.copyTooltipVisible ||
-      nextProps.theme !== theme
+      nextProps.theme !== theme ||
+      nextProps.showRiddleButton !== showRiddleButton
     );
   }
 
@@ -125,6 +135,7 @@ class Demo extends React.Component {
       utils,
       intl: { locale },
       theme,
+      showRiddleButton,
     } = props;
     const { copied, copyTooltipVisible } = state;
     if (!this.liveDemo) {
@@ -152,12 +163,11 @@ class Demo extends React.Component {
     const localizeIntro = content[locale] || content;
     const introChildren = utils.toReactComponent(['div'].concat(localizeIntro));
 
-    const highlightClass = classNames({
-      'highlight-wrapper': true,
+    const highlightClass = classNames('highlight-wrapper', {
       'highlight-wrapper-expand': codeExpand,
     });
 
-    const prefillStyle = `@import 'antd/dist/antd.css';\n\n${style || ''}`.replace(
+    const prefillStyle = `@import '~antd/dist/antd.css';\n\n${style || ''}`.replace(
       new RegExp(`#${meta.id}\\s*`, 'g'),
       '',
     );
@@ -176,8 +186,27 @@ class Demo extends React.Component {
 
     const sourceCode = this.getSourceCode();
 
+    const dependencies = sourceCode.split('\n').reduce(
+      (acc, line) => {
+        const matches = line.match(/import .+? from '(.+)';$/);
+        if (matches && matches[1] && !line.includes('antd')) {
+          const paths = matches[1].split('/');
+
+          if (paths.length) {
+            const dep = paths[0].startsWith('@') ? `${paths[0]}/${paths[1]}` : paths[0];
+            acc[dep] = 'latest';
+          }
+        }
+        return acc;
+      },
+      // eslint-disable-next-line no-undef
+      { antd: antdReproduceVersion },
+    );
+
+    dependencies['@ant-design/icons'] = 'latest';
+
     const codepenPrefillConfig = {
-      title: `${localizedTitle} - Ant Design Demo`,
+      title: `${localizedTitle} - antd@${dependencies.antd}`,
       html,
       js: sourceCode
         .replace(/import\s+{(\s+[^}]*\s+)}\s+from\s+'antd';/, 'const { $1 } = antd;')
@@ -207,29 +236,20 @@ class Demo extends React.Component {
         .join(';'),
       js_pre_processor: 'typescript',
     };
+
     const riddlePrefillConfig = {
-      title: `${localizedTitle} - Ant Design Demo`,
+      title: `${localizedTitle} - antd@${dependencies.antd}`,
       js: sourceCode,
       css: prefillStyle,
+      json: JSON.stringify(
+        {
+          name: 'antd-demo',
+          dependencies,
+        },
+        null,
+        2,
+      ),
     };
-    const dependencies = sourceCode.split('\n').reduce(
-      (acc, line) => {
-        const matches = line.match(/import .+? from '(.+)';$/);
-        if (matches && matches[1] && !line.includes('antd')) {
-          const paths = matches[1].split('/');
-
-          if (paths.length) {
-            const dep = paths[0].startsWith('@') ? `${paths[0]}/${paths[1]}` : paths[0];
-            acc[dep] = 'latest';
-          }
-        }
-        return acc;
-      },
-      // eslint-disable-next-line no-undef
-      { antd: antdReproduceVersion },
-    );
-
-    dependencies['@ant-design/icons'] = 'latest';
 
     // Reorder source code
     let parsedSourceCode = sourceCode;
@@ -256,17 +276,16 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
       .replace('<style>', '');
 
     const codesandboxPackage = {
-      name: `${localizedTitle} - Ant Design Demo`,
-      version: '1.0.0',
+      title: `${localizedTitle} - antd@${dependencies.antd}`,
       main: 'index.js',
       dependencies: {
         ...dependencies,
-        react: '^16.12.0',
-        'react-dom': '^16.12.0',
-        'react-scripts': '^3.0.1',
+        react: '^16.14.0',
+        'react-dom': '^16.14.0',
+        'react-scripts': '^4.0.0',
       },
       devDependencies: {
-        typescript: '^3.8.2',
+        typescript: '^4.0.5',
       },
       scripts: {
         start: 'react-scripts start',
@@ -287,7 +306,7 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
       },
     };
     const stackblitzPrefillConfig = {
-      title: `${localizedTitle} - Ant Design Demo`,
+      title: `${localizedTitle} - antd@${dependencies.antd}`,
       template: 'create-react-app',
       dependencies,
       files: {
@@ -316,26 +335,34 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
           </div>
           <div className="code-box-description">{introChildren}</div>
           <div className="code-box-actions">
+            {showRiddleButton ? (
+              <form
+                className="code-box-code-action"
+                action="//riddle.alibaba-inc.com/riddles/define"
+                method="POST"
+                target="_blank"
+                ref={this.riddleIconRef}
+                onClick={() => {
+                  this.track({ type: 'riddle', demo: meta.id });
+                  this.riddleIconRef.current.submit();
+                }}
+              >
+                <input type="hidden" name="data" value={JSON.stringify(riddlePrefillConfig)} />
+                <Tooltip title={<FormattedMessage id="app.demo.riddle" />}>
+                  <RiddleIcon className="code-box-riddle" />
+                </Tooltip>
+              </form>
+            ) : null}
             <form
-              action="//riddle.alibaba-inc.com/riddles/define"
-              method="POST"
-              target="_blank"
-              onClick={() => this.track({ type: 'riddle', demo: meta.id })}
-            >
-              <input type="hidden" name="data" value={JSON.stringify(riddlePrefillConfig)} />
-              <Tooltip title={<FormattedMessage id="app.demo.riddle" />}>
-                <input
-                  type="submit"
-                  value="Create New Riddle with Prefilled Data"
-                  className="code-box-riddle"
-                />
-              </Tooltip>
-            </form>
-            <form
+              className="code-box-code-action"
               action="https://codesandbox.io/api/v1/sandboxes/define"
               method="POST"
               target="_blank"
-              onClick={() => this.track({ type: 'codesandbox', demo: meta.id })}
+              ref={this.codeSandboxIconRef}
+              onClick={() => {
+                this.track({ type: 'codesandbox', demo: meta.id });
+                this.codeSandboxIconRef.current.submit();
+              }}
             >
               <input
                 type="hidden"
@@ -343,29 +370,26 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
                 value={compress(JSON.stringify(codesanboxPrefillConfig))}
               />
               <Tooltip title={<FormattedMessage id="app.demo.codesandbox" />}>
-                <input
-                  type="submit"
-                  value="Create New Sandbox with Prefilled Data"
-                  className="code-box-codesandbox"
-                />
+                <CodeSandboxIcon className="code-box-codesandbox" />
               </Tooltip>
             </form>
             <form
+              className="code-box-code-action"
               action="https://codepen.io/pen/define"
               method="POST"
               target="_blank"
-              onClick={() => this.track({ type: 'codepen', demo: meta.id })}
+              ref={this.codepenIconRef}
+              onClick={() => {
+                this.track({ type: 'codepen', demo: meta.id });
+                this.codepenIconRef.current.submit();
+              }}
               style={{
                 display: sourceCode ? '' : 'none',
               }}
             >
               <input type="hidden" name="data" value={JSON.stringify(codepenPrefillConfig)} />
               <Tooltip title={<FormattedMessage id="app.demo.codepen" />}>
-                <input
-                  type="submit"
-                  value="Create New Pen with Prefilled Data"
-                  className="code-box-codepen"
-                />
+                <CodePenIcon className="code-box-codepen" />
               </Tooltip>
             </form>
             <Tooltip title={<FormattedMessage id="app.demo.stackblitz" />}>
@@ -376,7 +400,7 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
                   stackblitzSdk.openProject(stackblitzPrefillConfig);
                 }}
               >
-                <ThunderboltOutlined />
+                <ThunderboltOutlined className="code-box-stackblitz" />
               </span>
             </Tooltip>
             <CopyToClipboard text={sourceCode} onCopy={() => this.handleCodeCopied(meta.id)}>
@@ -388,7 +412,7 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
                 {React.createElement(
                   copied && copyTooltipVisible ? CheckOutlined : SnippetsOutlined,
                   {
-                    className: 'code-box-code-copy',
+                    className: 'code-box-code-copy code-box-code-action',
                   },
                 )}
               </Tooltip>
@@ -396,13 +420,13 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
             <Tooltip
               title={<FormattedMessage id={`app.demo.code.${codeExpand ? 'hide' : 'show'}`} />}
             >
-              <span className="code-expand-icon">
+              <span className="code-expand-icon code-box-code-action">
                 <img
                   alt="expand code"
                   src={
                     theme === 'dark'
                       ? 'https://gw.alipayobjects.com/zos/antfincdn/btT3qDZn1U/wSAkBuJFbdxsosKKpqyq.svg'
-                      : 'https://gw.alipayobjects.com/zos/rmsportal/wSAkBuJFbdxsosKKpqyq.svg'
+                      : 'https://gw.alipayobjects.com/zos/antfincdn/Z5c7kzvi30/expand.svg'
                   }
                   className={codeExpand ? 'code-expand-icon-hide' : 'code-expand-icon-show'}
                   onClick={() => this.handleCodeExpand(meta.id)}
@@ -412,7 +436,7 @@ ${parsedSourceCode.replace('mountNode', "document.getElementById('container')")}
                   src={
                     theme === 'dark'
                       ? 'https://gw.alipayobjects.com/zos/antfincdn/CjZPwcKUG3/OpROPHYqWmrMDBFMZtKF.svg'
-                      : 'https://gw.alipayobjects.com/zos/rmsportal/OpROPHYqWmrMDBFMZtKF.svg'
+                      : 'https://gw.alipayobjects.com/zos/antfincdn/4zAaozCvUH/unexpand.svg'
                   }
                   className={codeExpand ? 'code-expand-icon-show' : 'code-expand-icon-hide'}
                   onClick={() => this.handleCodeExpand(meta.id)}

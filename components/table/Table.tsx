@@ -24,6 +24,7 @@ import {
   TablePaginationConfig,
   SortOrder,
   TableLocale,
+  TableAction,
 } from './interface';
 import useSelection, { SELECTION_ALL, SELECTION_INVERT } from './hooks/useSelection';
 import useSorter, { getSortData, SortState } from './hooks/useSorter';
@@ -123,6 +124,12 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     showSorterTooltip = true,
   } = props;
 
+  devWarning(
+    !(typeof rowKey === 'function' && rowKey.length > 1),
+    'Table',
+    '`index` parameter of `rowKey` function is deprecated. There is no guarantee that it will work as expected.',
+  );
+
   const screens = useBreakpoint();
 
   // 处理传入的 colums
@@ -160,7 +167,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   const { childrenColumnName = 'children' } = mergedExpandable;
 
   const expandType: ExpandType = React.useMemo<ExpandType>(() => {
-    if (rawData.some(item => (item as any)[childrenColumnName])) {
+    if (rawData.some(item => (item as any)?.[childrenColumnName])) {
       return 'nest';
     }
 
@@ -181,7 +188,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
       return rowKey;
     }
 
-    return (record: RecordType) => (record as any)[rowKey as string];
+    return (record: RecordType) => (record as any)?.[rowKey as string];
   }, [rowKey]);
 
   const [getRecordByKey] = useLazyKVMap(rawData, childrenColumnName, getRowKey);
@@ -189,7 +196,11 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   // ============================ Events =============================
   const changeEventInfo: Partial<ChangeEventInfo<RecordType>> = {};
 
-  const triggerOnChange = (info: Partial<ChangeEventInfo<RecordType>>, reset: boolean = false) => {
+  const triggerOnChange = (
+    info: Partial<ChangeEventInfo<RecordType>>,
+    action: TableAction,
+    reset: boolean = false,
+  ) => {
     const changeInfo = {
       ...changeEventInfo,
       ...info,
@@ -221,6 +232,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
           getSortData(rawData, changeInfo.sorterStates!, childrenColumnName),
           changeInfo.filterStates!,
         ),
+        action,
       });
     }
   };
@@ -242,6 +254,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
         sorter,
         sorterStates,
       },
+      'sort',
       false,
     );
   };
@@ -271,6 +284,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
         filters,
         filterStates,
       },
+      'filter',
       true,
     );
   };
@@ -299,9 +313,12 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
 
   // ========================== Pagination ==========================
   const onPaginationChange = (current: number, pageSize: number) => {
-    triggerOnChange({
-      pagination: { ...changeEventInfo.pagination, current, pageSize },
-    });
+    triggerOnChange(
+      {
+        pagination: { ...changeEventInfo.pagination, current, pageSize },
+      },
+      'paginate',
+    );
   };
 
   const [mergedPagination, resetPagination] = usePagination(
@@ -392,7 +409,9 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
   }
 
   // Indent size
-  mergedExpandable.indentSize = mergedExpandable.indentSize || indentSize || 15;
+  if (typeof mergedExpandable.indentSize !== 'number') {
+    mergedExpandable.indentSize = typeof indentSize === 'number' ? indentSize : 15;
+  }
 
   // ============================ Render ============================
   const transformColumns = React.useCallback(
@@ -406,7 +425,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
 
   let topPaginationNode: React.ReactNode;
   let bottomPaginationNode: React.ReactNode;
-  if (pagination !== false) {
+  if (pagination !== false && mergedPagination?.total) {
     let paginationSize: TablePaginationConfig['size'];
     if (mergedPagination.size) {
       paginationSize = mergedPagination.size;
@@ -454,9 +473,13 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
     };
   }
 
-  const wrapperClassNames = classNames(`${prefixCls}-wrapper`, className, {
-    [`${prefixCls}-wrapper-rtl`]: direction === 'rtl',
-  });
+  const wrapperClassNames = classNames(
+    `${prefixCls}-wrapper`,
+    {
+      [`${prefixCls}-wrapper-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
   return (
     <div className={wrapperClassNames} style={style}>
       <Spin spinning={false} {...spinProps}>
@@ -482,7 +505,7 @@ function Table<RecordType extends object = any>(props: TableProps<RecordType>) {
           internalRefs={internalRefs as any}
           transformColumns={transformColumns}
         />
-        {pageData && pageData.length > 0 && bottomPaginationNode}
+        {bottomPaginationNode}
       </Spin>
     </div>
   );

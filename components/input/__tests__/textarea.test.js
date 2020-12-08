@@ -1,14 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-// eslint-disable-next-line import/no-unresolved
+import RcTextArea from 'rc-textarea';
 import Input from '..';
 import focusTest from '../../../tests/shared/focusTest';
-import calculateNodeHeight, { calculateNodeStyling } from '../calculateNodeHeight';
 import { sleep } from '../../../tests/utils';
 
 const { TextArea } = Input;
 
-focusTest(TextArea);
+focusTest(TextArea, { refFocus: true });
 
 describe('TextArea', () => {
   const originalGetComputedStyle = window.getComputedStyle;
@@ -34,10 +33,12 @@ describe('TextArea', () => {
   it('should auto calculate height according to content length', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
+    const ref = React.createRef();
+
     const wrapper = mount(
-      <TextArea value="" readOnly autoSize={{ minRows: 2, maxRows: 6 }} wrap="off" />,
+      <TextArea value="" readOnly autoSize={{ minRows: 2, maxRows: 6 }} wrap="off" ref={ref} />,
     );
-    const mockFunc = jest.spyOn(wrapper.instance().resizableTextArea, 'resizeTextarea');
+    const mockFunc = jest.spyOn(ref.current.resizableTextArea, 'resizeTextarea');
     wrapper.setProps({ value: '1111\n2222\n3333' });
     await sleep(0);
     expect(mockFunc).toHaveBeenCalledTimes(1);
@@ -78,56 +79,15 @@ describe('TextArea', () => {
     expect(wrapper.render()).toMatchSnapshot();
   });
 
-  it('calculateNodeStyling works correctly', () => {
-    const wrapper = document.createElement('textarea');
-    wrapper.id = 'test';
-    wrapper.wrap = 'wrap';
-    calculateNodeStyling(wrapper, true);
-    const value = calculateNodeStyling(wrapper, true);
-    expect(value).toEqual({
-      borderSize: 2,
-      boxSizing: 'border-box',
-      paddingSize: 4,
-      sizingStyle:
-        'letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:border-box',
+  it('when prop value not in this.props, resizeTextarea should be called', async () => {
+    const ref = React.createRef();
+    const wrapper = mount(<TextArea aria-label="textarea" ref={ref} />);
+    const resizeTextarea = jest.spyOn(ref.current.resizableTextArea, 'resizeTextarea');
+    wrapper.find('textarea').simulate('change', {
+      target: {
+        value: 'test',
+      },
     });
-  });
-
-  it('boxSizing === "border-box"', () => {
-    const wrapper = document.createElement('textarea');
-    wrapper.style.boxSizing = 'border-box';
-    const { height } = calculateNodeHeight(wrapper);
-    expect(height).toBe(2);
-  });
-
-  it('boxSizing === "content-box"', () => {
-    const wrapper = document.createElement('textarea');
-    wrapper.style.boxSizing = 'content-box';
-    const { height } = calculateNodeHeight(wrapper);
-    expect(height).toBe(-4);
-  });
-
-  it('minRows or maxRows is not null', () => {
-    const wrapper = document.createElement('textarea');
-    expect(calculateNodeHeight(wrapper, 1, 1)).toEqual({
-      height: 2,
-      maxHeight: 9007199254740991,
-      minHeight: 2,
-      overflowY: undefined,
-    });
-    wrapper.style.boxSizing = 'content-box';
-    expect(calculateNodeHeight(wrapper, 1, 1)).toEqual({
-      height: -4,
-      maxHeight: 9007199254740991,
-      minHeight: -4,
-      overflowY: undefined,
-    });
-  });
-
-  it('when prop value not in this.props, resizeTextarea should be called', () => {
-    const wrapper = mount(<TextArea aria-label="textarea" />);
-    const resizeTextarea = jest.spyOn(wrapper.instance().resizableTextArea, 'resizeTextarea');
-    wrapper.find('textarea').simulate('change', 'test');
     expect(resizeTextarea).toHaveBeenCalled();
   });
 
@@ -137,7 +97,7 @@ describe('TextArea', () => {
     const wrapper = mount(
       <TextArea onPressEnter={onPressEnter} onKeyDown={onKeyDown} aria-label="textarea" />,
     );
-    wrapper.instance().handleKeyDown({ keyCode: 13 });
+    wrapper.find(RcTextArea).instance().handleKeyDown({ keyCode: 13 });
     expect(onPressEnter).toHaveBeenCalled();
     expect(onKeyDown).toHaveBeenCalled();
   });
@@ -158,6 +118,7 @@ describe('TextArea', () => {
           },
         },
       ]);
+    await Promise.resolve();
 
     expect(onResize).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -165,6 +126,61 @@ describe('TextArea', () => {
         height: expect.any(Number),
       }),
     );
+  });
+
+  it('should works same as Input', async () => {
+    const input = mount(<Input value="111" />);
+    const textarea = mount(<TextArea value="111" />);
+    input.setProps({ value: undefined });
+    textarea.setProps({ value: undefined });
+    expect(textarea.find('textarea').at(0).getDOMNode().value).toBe(input.getDOMNode().value);
+  });
+
+  describe('should support showCount', () => {
+    it('maxLength', () => {
+      const wrapper = mount(<TextArea maxLength={5} showCount value="12345678" />);
+      const textarea = wrapper.find('.ant-input-textarea');
+      expect(wrapper.find('textarea').prop('value')).toBe('12345');
+      expect(textarea.prop('data-count')).toBe('5 / 5');
+    });
+
+    // 修改TextArea value截取规则后新增单测
+    it('slice emoji', () => {
+      const wrapper = mount(<TextArea maxLength={5} showCount value="1234😂" />);
+      const textarea = wrapper.find('.ant-input-textarea');
+      expect(wrapper.find('textarea').prop('value')).toBe('1234😂');
+      expect(textarea.prop('data-count')).toBe('5 / 5');
+    });
+
+    it('className & style patch to outer', () => {
+      const wrapper = mount(
+        <TextArea className="bamboo" style={{ background: 'red' }} showCount />,
+      );
+
+      // Outer
+      expect(wrapper.find('div').first().hasClass('bamboo')).toBeTruthy();
+      expect(wrapper.find('div').first().props().style.background).toEqual('red');
+
+      // Inner
+      expect(wrapper.find('.ant-input').hasClass('bamboo')).toBeFalsy();
+      expect(wrapper.find('.ant-input').props().style.background).toBeFalsy();
+    });
+  });
+
+  it('should support size', async () => {
+    const wrapper = mount(<TextArea size="large" />);
+    expect(wrapper.find('textarea').hasClass('ant-input-lg')).toBe(true);
+    expect(wrapper.render()).toMatchSnapshot();
+  });
+
+  it('set mouse cursor position', () => {
+    const defaultValue = '11111';
+    const valLength = defaultValue.length;
+    const ref = React.createRef();
+    mount(<TextArea autoFocus ref={ref} defaultValue={defaultValue} />);
+    ref.current.resizableTextArea.textArea.setSelectionRange(valLength, valLength);
+    expect(ref.current.resizableTextArea.textArea.selectionStart).toEqual(5);
+    expect(ref.current.resizableTextArea.textArea.selectionEnd).toEqual(5);
   });
 });
 
@@ -174,7 +190,7 @@ describe('TextArea allowClear', () => {
     wrapper.find('textarea').simulate('change', { target: { value: '111' } });
     expect(wrapper.find('textarea').getDOMNode().value).toEqual('111');
     expect(wrapper.render()).toMatchSnapshot();
-    wrapper.find('.ant-input-textarea-clear-icon').at(0).simulate('click');
+    wrapper.find('.ant-input-clear-icon').at(0).simulate('click');
     expect(wrapper.render()).toMatchSnapshot();
     expect(wrapper.find('textarea').getDOMNode().value).toEqual('');
   });
@@ -183,7 +199,7 @@ describe('TextArea allowClear', () => {
     const wrappers = [null, undefined, ''].map(val => mount(<TextArea allowClear value={val} />));
     wrappers.forEach(wrapper => {
       expect(wrapper.find('textarea').getDOMNode().value).toEqual('');
-      expect(wrapper.find('.ant-input-textarea-clear-icon-hidden').exists()).toBeTruthy();
+      expect(wrapper.find('.ant-input-clear-icon-hidden').exists()).toBeTruthy();
       expect(wrapper.render()).toMatchSnapshot();
     });
   });
@@ -194,7 +210,7 @@ describe('TextArea allowClear', () => {
     );
     wrappers.forEach(wrapper => {
       expect(wrapper.find('textarea').getDOMNode().value).toEqual('');
-      expect(wrapper.find('.ant-textarea-clear-icon').exists()).toEqual(false);
+      expect(wrapper.find('.ant-input-clear-icon-hidden').exists()).toBeTruthy();
       expect(wrapper.render()).toMatchSnapshot();
     });
   });
@@ -207,7 +223,7 @@ describe('TextArea allowClear', () => {
       argumentEventObjectValue = e.target.value;
     };
     const wrapper = mount(<TextArea allowClear defaultValue="111" onChange={onChange} />);
-    wrapper.find('.ant-input-textarea-clear-icon').at(0).simulate('click');
+    wrapper.find('.ant-input-clear-icon').at(0).simulate('click');
     expect(argumentEventObject.type).toBe('click');
     expect(argumentEventObjectValue).toBe('');
     expect(wrapper.find('textarea').at(0).getDOMNode().value).toBe('');
@@ -221,7 +237,7 @@ describe('TextArea allowClear', () => {
       argumentEventObjectValue = e.target.value;
     };
     const wrapper = mount(<TextArea allowClear value="111" onChange={onChange} />);
-    wrapper.find('.ant-input-textarea-clear-icon').at(0).simulate('click');
+    wrapper.find('.ant-input-clear-icon').at(0).simulate('click');
     expect(argumentEventObject.type).toBe('click');
     expect(argumentEventObjectValue).toBe('');
     expect(wrapper.find('textarea').at(0).getDOMNode().value).toBe('111');
@@ -229,14 +245,14 @@ describe('TextArea allowClear', () => {
 
   it('should focus textarea after clear', () => {
     const wrapper = mount(<TextArea allowClear defaultValue="111" />, { attachTo: document.body });
-    wrapper.find('.ant-input-textarea-clear-icon').at(0).simulate('click');
+    wrapper.find('.ant-input-clear-icon').at(0).simulate('click');
     expect(document.activeElement).toBe(wrapper.find('textarea').at(0).getDOMNode());
     wrapper.unmount();
   });
 
   it('should not support allowClear when it is disabled', () => {
     const wrapper = mount(<TextArea allowClear defaultValue="111" disabled />);
-    expect(wrapper.find('.ant-input-textarea-clear-icon-hidden').exists()).toBeTruthy();
+    expect(wrapper.find('.ant-input-clear-icon-hidden').exists()).toBeTruthy();
   });
 
   it('not block input when `value` is undefined', () => {
@@ -283,5 +299,11 @@ describe('TextArea allowClear', () => {
     await sleep(100);
     expect(setSelectionRangeFn).toHaveBeenCalled();
     wrapper.unmount();
+  });
+
+  // https://github.com/ant-design/ant-design/issues/26308
+  it('should display defaultValue when value is undefined', () => {
+    const wrapper = mount(<Input.TextArea defaultValue="Light" value={undefined} />);
+    expect(wrapper.find('textarea').at(0).getDOMNode().value).toBe('Light');
   });
 });

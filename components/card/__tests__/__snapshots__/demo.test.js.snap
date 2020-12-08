@@ -587,7 +587,6 @@ Array [
           >
             <svg
               aria-hidden="true"
-              class=""
               data-icon="setting"
               fill="currentColor"
               focusable="false"
@@ -613,7 +612,6 @@ Array [
           >
             <svg
               aria-hidden="true"
-              class=""
               data-icon="edit"
               fill="currentColor"
               focusable="false"
@@ -639,7 +637,6 @@ Array [
           >
             <svg
               aria-hidden="true"
-              class=""
               data-icon="ellipsis"
               fill="currentColor"
               focusable="false"
@@ -719,7 +716,6 @@ exports[`renders ./components/card/demo/meta.md correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class=""
             data-icon="setting"
             fill="currentColor"
             focusable="false"
@@ -745,7 +741,6 @@ exports[`renders ./components/card/demo/meta.md correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class=""
             data-icon="edit"
             fill="currentColor"
             focusable="false"
@@ -771,7 +766,6 @@ exports[`renders ./components/card/demo/meta.md correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class=""
             data-icon="ellipsis"
             fill="currentColor"
             focusable="false"
@@ -839,7 +833,7 @@ Array [
         </div>
       </div>
       <div
-        class="ant-tabs ant-tabs-top ant-card-head-tabs ant-tabs-large"
+        class="ant-tabs ant-tabs-top ant-tabs-large ant-card-head-tabs"
       >
         <div
           class="ant-tabs-nav"
@@ -852,24 +846,30 @@ Array [
               class="ant-tabs-nav-list"
               style="transform:translate(0px, 0px)"
             >
-              <button
-                aria-selected="true"
+              <div
                 class="ant-tabs-tab ant-tabs-tab-active"
-                role="tab"
-                tabindex="0"
-                type="button"
               >
-                tab1
-              </button>
-              <button
-                aria-selected="false"
+                <div
+                  aria-selected="true"
+                  class="ant-tabs-tab-btn"
+                  role="tab"
+                  tabindex="0"
+                >
+                  tab1
+                </div>
+              </div>
+              <div
                 class="ant-tabs-tab"
-                role="tab"
-                tabindex="0"
-                type="button"
               >
-                tab2
-              </button>
+                <div
+                  aria-selected="false"
+                  class="ant-tabs-tab-btn"
+                  role="tab"
+                  tabindex="0"
+                >
+                  tab2
+                </div>
+              </div>
               <div
                 class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
               />
@@ -896,7 +896,6 @@ Array [
               >
                 <svg
                   aria-hidden="true"
-                  class=""
                   data-icon="ellipsis"
                   fill="currentColor"
                   focusable="false"
@@ -928,7 +927,7 @@ Array [
               aria-hidden="true"
               class="ant-tabs-tabpane"
               role="tabpanel"
-              style="visibility:hidden;height:0;overflow-y:hidden"
+              style="display:none"
               tabindex="-1"
             />
           </div>
@@ -956,7 +955,7 @@ Array [
         class="ant-card-head-wrapper"
       />
       <div
-        class="ant-tabs ant-tabs-top ant-card-head-tabs ant-tabs-large"
+        class="ant-tabs ant-tabs-top ant-tabs-large ant-card-head-tabs"
       >
         <div
           class="ant-tabs-nav"
@@ -969,33 +968,42 @@ Array [
               class="ant-tabs-nav-list"
               style="transform:translate(0px, 0px)"
             >
-              <button
-                aria-selected="false"
+              <div
                 class="ant-tabs-tab"
-                role="tab"
-                tabindex="0"
-                type="button"
               >
-                article
-              </button>
-              <button
-                aria-selected="true"
+                <div
+                  aria-selected="false"
+                  class="ant-tabs-tab-btn"
+                  role="tab"
+                  tabindex="0"
+                >
+                  article
+                </div>
+              </div>
+              <div
                 class="ant-tabs-tab ant-tabs-tab-active"
-                role="tab"
-                tabindex="0"
-                type="button"
               >
-                app
-              </button>
-              <button
-                aria-selected="false"
+                <div
+                  aria-selected="true"
+                  class="ant-tabs-tab-btn"
+                  role="tab"
+                  tabindex="0"
+                >
+                  app
+                </div>
+              </div>
+              <div
                 class="ant-tabs-tab"
-                role="tab"
-                tabindex="0"
-                type="button"
               >
-                project
-              </button>
+                <div
+                  aria-selected="false"
+                  class="ant-tabs-tab-btn"
+                  role="tab"
+                  tabindex="0"
+                >
+                  project
+                </div>
+              </div>
               <div
                 class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
               />
@@ -1022,7 +1030,6 @@ Array [
               >
                 <svg
                   aria-hidden="true"
-                  class=""
                   data-icon="ellipsis"
                   fill="currentColor"
                   focusable="false"
@@ -1052,13 +1059,12 @@ Array [
         >
           <div
             class="ant-tabs-content ant-tabs-content-top"
-            style="margin-left:-100%"
           >
             <div
               aria-hidden="true"
               class="ant-tabs-tabpane"
               role="tabpanel"
-              style="visibility:hidden;height:0;overflow-y:hidden"
+              style="display:none"
               tabindex="-1"
             />
             <div
@@ -1071,7 +1077,7 @@ Array [
               aria-hidden="true"
               class="ant-tabs-tabpane"
               role="tabpanel"
-              style="visibility:hidden;height:0;overflow-y:hidden"
+              style="display:none"
               tabindex="-1"
             />
           </div>

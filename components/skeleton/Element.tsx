@@ -27,18 +27,18 @@ const Element = (props: SkeletonElementProps) => {
   const sizeStyle: React.CSSProperties =
     typeof size === 'number'
       ? {
-        width: size,
-        height: size,
-        lineHeight: `${size}px`,
-      }
+          width: size,
+          height: size,
+          lineHeight: `${size}px`,
+        }
       : {};
+
   return (
     <span
-      className={classNames(prefixCls, className, sizeCls, shapeCls)}
+      className={classNames(prefixCls, sizeCls, shapeCls, className)}
       style={{ ...sizeStyle, ...style }}
     />
   );
 };
-
 
 export default Element;

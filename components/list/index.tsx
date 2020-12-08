@@ -105,11 +105,6 @@ function List<T>({
     return (page: number, pageSize: number) => {
       setPaginationCurrent(page);
       setPaginationSize(pageSize);
-      if (eventName === 'onShowSizeChange') {
-        if (pagination) {
-          pagination?.onChange?.(page, pageSize);
-        }
-      }
       if (pagination && (pagination as any)[eventName]) {
         (pagination as any)[eventName](page, pageSize);
       }
@@ -177,16 +172,20 @@ function List<T>({
       break;
   }
 
-  const classString = classNames(prefixCls, className, {
-    [`${prefixCls}-vertical`]: itemLayout === 'vertical',
-    [`${prefixCls}-${sizeCls}`]: sizeCls,
-    [`${prefixCls}-split`]: split,
-    [`${prefixCls}-bordered`]: bordered,
-    [`${prefixCls}-loading`]: isLoading,
-    [`${prefixCls}-grid`]: grid,
-    [`${prefixCls}-something-after-last-item`]: isSomethingAfterLastItem(),
-    [`${prefixCls}-rtl`]: direction === 'rtl',
-  });
+  const classString = classNames(
+    prefixCls,
+    {
+      [`${prefixCls}-vertical`]: itemLayout === 'vertical',
+      [`${prefixCls}-${sizeCls}`]: sizeCls,
+      [`${prefixCls}-split`]: split,
+      [`${prefixCls}-bordered`]: bordered,
+      [`${prefixCls}-loading`]: isLoading,
+      [`${prefixCls}-grid`]: grid,
+      [`${prefixCls}-something-after-last-item`]: isSomethingAfterLastItem(),
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
 
   const paginationProps = {
     ...defaultPaginationProps,

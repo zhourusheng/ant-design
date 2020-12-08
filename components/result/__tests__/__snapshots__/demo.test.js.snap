@@ -1036,7 +1036,6 @@ exports[`renders ./components/result/demo/customIcon.md correctly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="smile"
         fill="currentColor"
         focusable="false"
@@ -1084,7 +1083,6 @@ exports[`renders ./components/result/demo/error.md correctly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="close-circle"
         fill="currentColor"
         focusable="false"
@@ -1107,6 +1105,26 @@ exports[`renders ./components/result/demo/error.md correctly 1`] = `
     class="ant-result-subtitle"
   >
     Please check and modify the following information before resubmitting.
+  </div>
+  <div
+    class="ant-result-extra"
+  >
+    <button
+      class="ant-btn ant-btn-primary"
+      type="button"
+    >
+      <span>
+        Go Console
+      </span>
+    </button>
+    <button
+      class="ant-btn"
+      type="button"
+    >
+      <span>
+        Buy Again
+      </span>
+    </button>
   </div>
   <div
     class="ant-result-content"
@@ -1136,7 +1154,6 @@ exports[`renders ./components/result/demo/error.md correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class=""
             data-icon="close-circle"
             fill="currentColor"
             focusable="false"
@@ -1167,7 +1184,6 @@ exports[`renders ./components/result/demo/error.md correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class=""
             data-icon="close-circle"
             fill="currentColor"
             focusable="false"
@@ -1190,26 +1206,6 @@ exports[`renders ./components/result/demo/error.md correctly 1`] = `
       </div>
     </div>
   </div>
-  <div
-    class="ant-result-extra"
-  >
-    <button
-      class="ant-btn ant-btn-primary"
-      type="button"
-    >
-      <span>
-        Go Console
-      </span>
-    </button>
-    <button
-      class="ant-btn"
-      type="button"
-    >
-      <span>
-        Buy Again
-      </span>
-    </button>
-  </div>
 </div>
 `;
 
@@ -1227,7 +1223,6 @@ exports[`renders ./components/result/demo/info.md correctly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="exclamation-circle"
         fill="currentColor"
         focusable="false"
@@ -1275,7 +1270,6 @@ exports[`renders ./components/result/demo/success.md correctly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="check-circle"
         fill="currentColor"
         focusable="false"
@@ -1336,7 +1330,6 @@ exports[`renders ./components/result/demo/warning.md correctly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="warning"
         fill="currentColor"
         focusable="false"

@@ -269,7 +269,6 @@ exports[`Progress render out-of-range progress 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="check-circle"
         fill="currentColor"
         focusable="false"
@@ -312,7 +311,6 @@ exports[`Progress render out-of-range progress with info 1`] = `
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="check-circle"
         fill="currentColor"
         focusable="false"
@@ -500,6 +498,35 @@ exports[`Progress render strokeColor 3`] = `
 </Progress>
 `;
 
+exports[`Progress render successColor progress 1`] = `
+<div
+  class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
+>
+  <div
+    class="ant-progress-outer"
+  >
+    <div
+      class="ant-progress-inner"
+    >
+      <div
+        class="ant-progress-bg"
+        style="width: 60%; height: 8px;"
+      />
+      <div
+        class="ant-progress-success-bg"
+        style="width: 30%; height: 8px; background-color: rgb(255, 255, 255);"
+      />
+    </div>
+  </div>
+  <span
+    class="ant-progress-text"
+    title="60%"
+  >
+    60%
+  </span>
+</div>
+`;
+
 exports[`Progress render trailColor progress 1`] = `
 <div
   class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default"
@@ -578,4 +605,10 @@ exports[`Progress should support steps 1`] = `
     </span>
   </div>
 </div>
+`;
+
+exports[`Progress steps should have default percent 0 1`] = `
+<div
+  class="undefined-steps-outer"
+/>
 `;

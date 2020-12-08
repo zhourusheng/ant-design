@@ -1,9 +1,9 @@
 import * as React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import ArrowLeftOutlined from '@ant-design/icons/ArrowLeftOutlined';
 import ArrowRightOutlined from '@ant-design/icons/ArrowRightOutlined';
 import ResizeObserver from 'rc-resize-observer';
-import { ConfigConsumer, ConfigConsumerProps } from '../config-provider';
+import { ConfigConsumer, ConfigConsumerProps, DirectionType } from '../config-provider';
 import { TagType } from '../tag';
 import Breadcrumb, { BreadcrumbProps } from '../breadcrumb';
 import Avatar, { AvatarProps } from '../avatar';
@@ -59,21 +59,31 @@ const renderBreadcrumb = (breadcrumb: BreadcrumbProps) => {
   return <Breadcrumb {...breadcrumb} />;
 };
 
-const getBackIcon = (props: PageHeaderProps, direction: string = 'ltr') => {
+const getBackIcon = (props: PageHeaderProps, direction: DirectionType = 'ltr') => {
   if (props.backIcon !== undefined) {
     return props.backIcon;
   }
   return direction === 'rtl' ? <ArrowRightOutlined /> : <ArrowLeftOutlined />;
 };
 
-const renderTitle = (prefixCls: string, props: PageHeaderProps, direction: string = 'ltr') => {
+const renderTitle = (
+  prefixCls: string,
+  props: PageHeaderProps,
+  direction: DirectionType = 'ltr',
+) => {
   const { title, avatar, subTitle, tags, extra, onBack } = props;
   const headingPrefixCls = `${prefixCls}-heading`;
-  if (title || subTitle || tags || extra) {
-    const backIcon = getBackIcon(props, direction);
-    const backIconDom = renderBack(prefixCls, backIcon, onBack);
-    return (
-      <div className={headingPrefixCls}>
+  const hasHeading = title || subTitle || tags || extra;
+  // 如果 什么都没有，直接返回一个 null
+  if (!hasHeading) {
+    return null;
+  }
+  const backIcon = getBackIcon(props, direction);
+  const backIconDom = renderBack(prefixCls, backIcon, onBack);
+  const hasTitle = backIconDom || avatar || hasHeading;
+  return (
+    <div className={headingPrefixCls}>
+      {hasTitle && (
         <div className={`${headingPrefixCls}-left`}>
           {backIconDom}
           {avatar && <Avatar {...avatar} />}
@@ -95,11 +105,10 @@ const renderTitle = (prefixCls: string, props: PageHeaderProps, direction: strin
           )}
           {tags && <span className={`${headingPrefixCls}-tags`}>{tags}</span>}
         </div>
-        {extra && <span className={`${headingPrefixCls}-extra`}>{extra}</span>}
-      </div>
-    );
-  }
-  return null;
+      )}
+      {extra && <span className={`${headingPrefixCls}-extra`}>{extra}</span>}
+    </div>
+  );
 };
 
 const renderFooter = (prefixCls: string, footer: React.ReactNode) => {
@@ -140,7 +149,7 @@ const PageHeader: React.FC<PageHeaderProps> = props => {
 
         const prefixCls = getPrefixCls('page-header', customizePrefixCls);
         const breadcrumbDom = breadcrumb && breadcrumb.routes ? renderBreadcrumb(breadcrumb) : null;
-        const className = classnames(prefixCls, customizeClassName, {
+        const className = classNames(prefixCls, customizeClassName, {
           'has-breadcrumb': breadcrumbDom,
           'has-footer': footer,
           [`${prefixCls}-ghost`]: ghost,

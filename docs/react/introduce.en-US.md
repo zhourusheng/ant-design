@@ -17,9 +17,9 @@ Following the Ant Design specification, we developed a React UI library `antd` t
   vertical-align: middle;
 }
 .pic-plus span {
-  font-size: 30px;
-  color: #aaa;
   margin: 0 20px;
+  color: #aaa;
+  font-size: 30px;
 }
 </style>
 
@@ -46,9 +46,8 @@ Following the Ant Design specification, we developed a React UI library `antd` t
 
 Polyfills are needed for IE browsers. We recommend [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) for it. You can set `targets` config if you are using [umi](http://umijs.org/).
 
-`antd@3.x` supports both React 15 and 16 but we strongly suggest React 16 for better performance and fewer bugs.
-
-> We drop support of IE8 after `antd@2.0`, IE9/10 after `antd@4.0`,
+> We drop support of IE8 after `antd@2.0`,
+> We drop support of React 15 and IE9/10 after `antd@4.0`,
 
 ## Version
 
@@ -102,7 +101,7 @@ import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 ### TypeScript
 
-`antd` provides a built-in ts definition, don't install @types/antd`.
+`antd` provides a built-in ts definition, don't install `@types/antd`.
 
 ## Links
 

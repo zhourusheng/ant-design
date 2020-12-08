@@ -1,13 +1,15 @@
 import * as React from 'react';
-import Animate from 'rc-animate';
+import CSSMotion from 'rc-motion';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import useMergedState from 'rc-util/lib/hooks/useMergedState';
 import classNames from 'classnames';
 import omit from 'omit.js';
 import VerticalAlignTopOutlined from '@ant-design/icons/VerticalAlignTopOutlined';
-import throttleByAnimationFrame from '../_util/throttleByAnimationFrame';
+import { throttleByAnimationFrame } from '../_util/throttleByAnimationFrame';
 import { ConfigContext } from '../config-provider';
 import getScroll from '../_util/getScroll';
 import scrollTo from '../_util/scrollTo';
+import { cloneElement } from '../_util/reactNode';
 
 export interface BackTopProps {
   // 滚动超过多少高度后才出现 BackTop
@@ -20,11 +22,14 @@ export interface BackTopProps {
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  duration?: number;
   visible?: boolean; // Only for test. Don't use it.
 }
 
 const BackTop: React.FC<BackTopProps> = props => {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useMergedState(false, {
+    value: props.visible,
+  });
 
   // TODO: HTMLDivElement: https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLDivElement
 
@@ -75,18 +80,11 @@ const BackTop: React.FC<BackTopProps> = props => {
     };
   }, [props.target]);
 
-  // 控制 visible
-  const getVisible = () => {
-    if ('visible' in props) {
-      return props.visible;
-    }
-    return visible;
-  };
-
   const scrollToTop = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { onClick, target } = props;
+    const { onClick, target, duration = 450 } = props;
     scrollTo(0, {
       getContainer: target || getDefaultTarget,
+      duration,
     });
     // 触发 props 中的 onClick 事件
     if (typeof onClick === 'function') {
@@ -109,9 +107,18 @@ const BackTop: React.FC<BackTopProps> = props => {
 
     // 使用 rc-animate 处理显隐动画
     return (
-      <Animate component="" transitionName="fade">
-        {getVisible() ? <div>{children || defaultElement}</div> : null}
-      </Animate>
+      <CSSMotion visible={visible} motionName="fade" removeOnLeave>
+        {({ className: motionClassName }) => {
+          const childNode = children || defaultElement;
+          return (
+            <div>
+              {cloneElement(childNode, ({ className }) => ({
+                className: classNames(motionClassName, className),
+              }))}
+            </div>
+          );
+        }}
+      </CSSMotion>
     );
   };
 
@@ -119,9 +126,13 @@ const BackTop: React.FC<BackTopProps> = props => {
 
   const { prefixCls: customizePrefixCls, className = '' } = props;
   const prefixCls = getPrefixCls('back-top', customizePrefixCls);
-  const classString = classNames(prefixCls, className, {
-    [`${prefixCls}-rtl`]: direction === 'rtl',
-  });
+  const classString = classNames(
+    prefixCls,
+    {
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
 
   // fix https://fb.me/react-unknown-prop
 

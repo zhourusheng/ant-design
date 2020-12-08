@@ -1,11 +1,14 @@
 import * as React from 'react';
 import RcCollapse from 'rc-collapse';
+import { CSSMotionProps } from 'rc-motion';
 import classNames from 'classnames';
 import RightOutlined from '@ant-design/icons/RightOutlined';
 
-import CollapsePanel from './CollapsePanel';
+import toArray from 'rc-util/lib/Children/toArray';
+import omit from 'omit.js';
+import CollapsePanel, { CollapsibleType } from './CollapsePanel';
 import { ConfigContext } from '../config-provider';
-import animation from '../_util/openAnimation';
+import collapseMotion from '../_util/motion';
 import { cloneElement } from '../_util/reactNode';
 
 export type ExpandIconPosition = 'left' | 'right' | undefined;
@@ -23,6 +26,8 @@ export interface CollapseProps {
   prefixCls?: string;
   expandIcon?: (panelProps: PanelProps) => React.ReactNode;
   expandIconPosition?: ExpandIconPosition;
+  ghost?: boolean;
+  collapsible?: CollapsibleType;
 }
 
 interface PanelProps {
@@ -32,8 +37,10 @@ interface PanelProps {
   style?: React.CSSProperties;
   showArrow?: boolean;
   forceRender?: boolean;
+  /** @deprecated Use `collapsible="disabled"` instead */
   disabled?: boolean;
   extra?: React.ReactNode;
+  collapsible?: CollapsibleType;
 }
 
 interface CollapseInterface extends React.FC<CollapseProps> {
@@ -42,7 +49,7 @@ interface CollapseInterface extends React.FC<CollapseProps> {
 
 const Collapse: CollapseInterface = props => {
   const { getPrefixCls, direction } = React.useContext(ConfigContext);
-  const { prefixCls: customizePrefixCls, className = '', bordered } = props;
+  const { prefixCls: customizePrefixCls, className = '', bordered = true, ghost } = props;
   const prefixCls = getPrefixCls('collapse', customizePrefixCls);
 
   const getIconPosition = () => {
@@ -72,26 +79,47 @@ const Collapse: CollapseInterface = props => {
       [`${prefixCls}-borderless`]: !bordered,
       [`${prefixCls}-icon-position-${iconPosition}`]: true,
       [`${prefixCls}-rtl`]: direction === 'rtl',
+      [`${prefixCls}-ghost`]: !!ghost,
     },
     className,
   );
-  const openAnimation = { ...animation, appear() {} };
+  const openMotion: CSSMotionProps = {
+    ...collapseMotion,
+    motionAppear: false,
+    leavedClassName: `${prefixCls}-content-hidden`,
+  };
+
+  const getItems = () => {
+    const { children } = props;
+    return toArray(children).map((child: React.ReactElement, index: number) => {
+      if (child.props?.disabled) {
+        const key = child.key || String(index);
+        const { disabled, collapsible } = child.props;
+        const childProps: CollapseProps = {
+          ...omit(child.props, 'disabled'),
+          key,
+          collapsible: collapsible ?? (disabled ? 'disabled' : undefined),
+        };
+        return cloneElement(child, childProps);
+      }
+      return child;
+    });
+  };
 
   return (
     <RcCollapse
-      openAnimation={openAnimation}
+      openMotion={openMotion}
       {...props}
-      expandIcon={(panelProps: PanelProps) => renderExpandIcon(panelProps)}
+      bordered={bordered}
+      expandIcon={renderExpandIcon}
       prefixCls={prefixCls}
       className={collapseClassName}
-    />
+    >
+      {getItems()}
+    </RcCollapse>
   );
 };
 
 Collapse.Panel = CollapsePanel;
-
-Collapse.defaultProps = {
-  bordered: true,
-};
 
 export default Collapse;
