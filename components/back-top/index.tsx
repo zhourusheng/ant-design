@@ -40,7 +40,7 @@ const BackTop: React.FC<BackTopProps> = props => {
     return ref.current && ref.current.ownerDocument ? ref.current.ownerDocument : window;
   };
 
-  // scroll 处理时间
+  // scroll 处理事件
   const handleScroll = throttleByAnimationFrame(
     (e: React.UIEvent<HTMLElement> | { target: any }) => {
       const { visibilityHeight } = props;
@@ -75,6 +75,7 @@ const BackTop: React.FC<BackTopProps> = props => {
     };
   }, [props.target]);
 
+  // 控制 visible
   const getVisible = () => {
     if ('visible' in props) {
       return props.visible;
@@ -106,6 +107,7 @@ const BackTop: React.FC<BackTopProps> = props => {
       </div>
     );
 
+    // 使用 rc-animate 处理显隐动画
     return (
       <Animate component="" transitionName="fade">
         {getVisible() ? <div>{children || defaultElement}</div> : null}

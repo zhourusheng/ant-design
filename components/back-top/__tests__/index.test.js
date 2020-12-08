@@ -9,6 +9,7 @@ describe('BackTop', () => {
   mountTest(BackTop);
   rtlTest(BackTop);
 
+  // 点击后滚动到顶部
   it('should scroll to top after click it', async () => {
     const wrapper = mount(<BackTop visibilityHeight={-1} />);
     const scrollToSpy = jest.spyOn(window, 'scrollTo').mockImplementation((x, y) => {
