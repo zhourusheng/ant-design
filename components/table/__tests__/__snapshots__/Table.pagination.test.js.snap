@@ -91,9 +91,11 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
           class="ant-pagination-prev ant-pagination-disabled"
           title="Previous Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
             disabled=""
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="left"
@@ -102,7 +104,6 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="left"
                 fill="currentColor"
                 focusable="false"
@@ -115,14 +116,16 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
         <li
           class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
           tabindex="0"
           title="1"
         >
-          <a>
+          <a
+            rel="nofollow"
+          >
             1
           </a>
         </li>
@@ -131,9 +134,11 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
           class="ant-pagination-next ant-pagination-disabled"
           title="Next Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
             disabled=""
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="right"
@@ -142,7 +147,6 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="right"
                 fill="currentColor"
                 focusable="false"
@@ -155,7 +159,7 @@ exports[`Table.pagination Accepts pagination as true 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>
@@ -234,9 +238,11 @@ exports[`Table.pagination renders pagination correctly 1`] = `
           class="ant-pagination-prev ant-pagination-disabled"
           title="Previous Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
             disabled=""
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="left"
@@ -245,7 +251,6 @@ exports[`Table.pagination renders pagination correctly 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="left"
                 fill="currentColor"
                 focusable="false"
@@ -258,14 +263,16 @@ exports[`Table.pagination renders pagination correctly 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
         <li
           class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
           tabindex="0"
           title="1"
         >
-          <a>
+          <a
+            rel="nofollow"
+          >
             1
           </a>
         </li>
@@ -274,7 +281,9 @@ exports[`Table.pagination renders pagination correctly 1`] = `
           tabindex="0"
           title="2"
         >
-          <a>
+          <a
+            rel="nofollow"
+          >
             2
           </a>
         </li>
@@ -284,8 +293,10 @@ exports[`Table.pagination renders pagination correctly 1`] = `
           tabindex="0"
           title="Next Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="right"
@@ -294,7 +305,6 @@ exports[`Table.pagination renders pagination correctly 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="right"
                 fill="currentColor"
                 focusable="false"
@@ -307,7 +317,7 @@ exports[`Table.pagination renders pagination correctly 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>
@@ -406,9 +416,11 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
           class="ant-pagination-prev ant-pagination-disabled"
           title="Previous Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
             disabled=""
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="left"
@@ -417,7 +429,6 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="left"
                 fill="currentColor"
                 focusable="false"
@@ -430,14 +441,16 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
         <li
           class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
           tabindex="0"
           title="1"
         >
-          <a>
+          <a
+            rel="nofollow"
+          >
             1
           </a>
         </li>
@@ -446,9 +459,11 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
           class="ant-pagination-next ant-pagination-disabled"
           title="Next Page"
         >
-          <a
+          <button
             class="ant-pagination-item-link"
             disabled=""
+            tabindex="-1"
+            type="button"
           >
             <span
               aria-label="right"
@@ -457,7 +472,6 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class=""
                 data-icon="right"
                 fill="currentColor"
                 focusable="false"
@@ -470,7 +484,7 @@ exports[`Table.pagination renders pagination topLeft and bottomRight 1`] = `
                 />
               </svg>
             </span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>

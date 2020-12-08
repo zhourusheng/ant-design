@@ -21,6 +21,10 @@ function isString(str: any) {
   return typeof str === 'string';
 }
 
+function isUnborderedButtonType(type: ButtonType | undefined) {
+  return type === 'text' || type === 'link';
+}
+
 // Insert one space between two chinese characters automatically.
 // 自动在两个汉字之间插入空格
 function insertSpace(child: React.ReactChild, needInserted: boolean) {
@@ -76,7 +80,7 @@ function spaceChildren(children: React.ReactNode, needInserted: boolean) {
 // 定义一些类型
 const ButtonTypes = tuple('default', 'primary', 'ghost', 'dashed', 'link', 'text');
 export type ButtonType = typeof ButtonTypes[number];
-const ButtonShapes = tuple('circle', 'circle-outline', 'round');
+const ButtonShapes = tuple('circle', 'round');
 export type ButtonShape = typeof ButtonShapes[number];
 const ButtonHTMLTypes = tuple('submit', 'button', 'reset');
 export type ButtonHTMLType = typeof ButtonHTMLTypes[number];
@@ -131,7 +135,7 @@ type Loading = number | boolean;
 
 const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (props, ref) => {
   const {
-    loading,
+    loading = false,
     prefixCls: customizePrefixCls,
     type,
     danger,
@@ -140,8 +144,11 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     className,
     children,
     icon,
-    ghost,
-    block,
+    ghost = false,
+    block = false,
+    /** if we extract items here, we dont need use omit.js */
+    // React does not recognize the `htmlType` prop on a DOM element. Here we pick it out of `rest`.
+    htmlType = 'button' as ButtonProps['htmlType'],
     ...rest
   } = props;
 
@@ -168,7 +175,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
 
   // 两个中文添加空格
   const isNeedInserted = () => {
-    return React.Children.count(children) === 1 && !icon && type !== 'link' && type !== 'text';
+    return React.Children.count(children) === 1 && !icon && !isUnborderedButtonType(type);
   };
 
   const fixTwoCNChar = () => {
@@ -205,9 +212,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     }
   }, [loadingOrDelay]);
 
-  React.useEffect(() => {
-    fixTwoCNChar();
-  }, [buttonRef]);
+  React.useEffect(fixTwoCNChar, [buttonRef]);
 
   // 处理 onClick 点击事件
   const handleClick = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement, MouseEvent>) => {
@@ -226,6 +231,12 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     !(typeof icon === 'string' && icon.length > 2),
     'Button',
     `\`icon\` is using ReactNode instead of string naming in v4. Please check \`${icon}\` at https://ant.design/components/icon`,
+  );
+
+  devWarning(
+    !(ghost && isUnborderedButtonType(type)),
+    'Button',
+    "`link` or `text` button can't be a `ghost` button.",
   );
 
   const prefixCls = getPrefixCls('btn', customizePrefixCls);
@@ -247,18 +258,22 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
 
   const iconType = innerLoading ? 'loading' : icon;
 
-  const classes = classNames(prefixCls, className, {
-    [`${prefixCls}-${type}`]: type,
-    [`${prefixCls}-${shape}`]: shape,
-    [`${prefixCls}-${sizeCls}`]: sizeCls,
-    [`${prefixCls}-icon-only`]: !children && children !== 0 && iconType,
-    [`${prefixCls}-background-ghost`]: ghost,
-    [`${prefixCls}-loading`]: innerLoading,
-    [`${prefixCls}-two-chinese-chars`]: hasTwoCNChar && autoInsertSpace,
-    [`${prefixCls}-block`]: block,
-    [`${prefixCls}-dangerous`]: !!danger,
-    [`${prefixCls}-rtl`]: direction === 'rtl',
-  });
+  const classes = classNames(
+    prefixCls,
+    {
+      [`${prefixCls}-${type}`]: type,
+      [`${prefixCls}-${shape}`]: shape,
+      [`${prefixCls}-${sizeCls}`]: sizeCls,
+      [`${prefixCls}-icon-only`]: !children && children !== 0 && iconType,
+      [`${prefixCls}-background-ghost`]: ghost && !isUnborderedButtonType(type),
+      [`${prefixCls}-loading`]: innerLoading,
+      [`${prefixCls}-two-chinese-chars`]: hasTwoCNChar && autoInsertSpace,
+      [`${prefixCls}-block`]: block,
+      [`${prefixCls}-dangerous`]: !!danger,
+      [`${prefixCls}-rtl`]: direction === 'rtl',
+    },
+    className,
+  );
 
   const iconNode =
     icon && !innerLoading ? (
@@ -272,7 +287,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
       ? spaceChildren(children, isNeedInserted() && autoInsertSpace)
       : null;
 
-  const linkButtonRestProps = omit(rest as AnchorButtonProps, ['htmlType', 'loading']);
+  const linkButtonRestProps = omit(rest as AnchorButtonProps, ['navigate']);
   if (linkButtonRestProps.href !== undefined) {
     return (
       <a {...linkButtonRestProps} className={classes} onClick={handleClick} ref={buttonRef}>
@@ -282,12 +297,9 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     );
   }
 
-  // React does not recognize the `htmlType` prop on a DOM element. Here we pick it out of `rest`.
-  const { htmlType, ...otherProps } = rest as NativeButtonProps;
-
   const buttonNode = (
     <button
-      {...(omit(otherProps, ['loading']) as NativeButtonProps)}
+      {...(rest as NativeButtonProps)}
       type={htmlType}
       className={classes}
       onClick={handleClick}
@@ -298,7 +310,7 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
     </button>
   );
 
-  if (type === 'link' || type === 'text') {
+  if (isUnborderedButtonType(type)) {
     return buttonNode;
   }
 
@@ -308,13 +320,6 @@ const InternalButton: React.ForwardRefRenderFunction<unknown, ButtonProps> = (pr
 const Button = React.forwardRef<unknown, ButtonProps>(InternalButton) as CompoundedComponent;
 
 Button.displayName = 'Button';
-
-Button.defaultProps = {
-  loading: false,
-  ghost: false,
-  block: false,
-  htmlType: 'button' as ButtonProps['htmlType'],
-};
 
 Button.Group = Group;
 Button.__ANT_BUTTON = true;

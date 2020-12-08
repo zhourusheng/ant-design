@@ -11,13 +11,14 @@ export interface BreadcrumbItemProps {
   overlay?: DropDownProps['overlay'];
   dropdownProps?: DropDownProps;
   onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLSpanElement>;
+  className?: string;
 }
 interface BreadcrumbItemInterface extends React.FC<BreadcrumbItemProps> {
   __ANT_BREADCRUMB_ITEM: boolean;
 }
 const BreadcrumbItem: BreadcrumbItemInterface = ({
   prefixCls: customizePrefixCls,
-  separator,
+  separator = '/',
   children,
   overlay,
   dropdownProps,

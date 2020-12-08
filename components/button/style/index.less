@@ -19,7 +19,7 @@
   // Fixing https://github.com/ant-design/ant-design/issues/13214
   // It is a render problem of chrome, which is only happened in the codesandbox demo
   // 0.001px solution works and I don't why
-  line-height: @line-height-base;
+  line-height: @btn-line-height;
   .btn;
   .btn-default;
 
@@ -101,7 +101,7 @@
 
   &-icon-only {
     .btn-square(@btn-prefix-cls);
-    vertical-align: -0.5px;
+    vertical-align: -1px;
   }
 
   &-round {
@@ -111,8 +111,7 @@
     }
   }
 
-  &-circle,
-  &-circle-outline {
+  &-circle {
     .btn-circle(@btn-prefix-cls);
   }
 
@@ -160,7 +159,12 @@
     transition: all 0.3s @ease-in-out;
 
     .@{iconfont-css-prefix} {
-      padding-right: @margin-xs;
+      padding-right: @padding-xs;
+      animation: none;
+      // for smooth button padding transition
+      svg {
+        animation: loadingCircle 1s infinite linear;
+      }
     }
 
     &:only-child {
@@ -206,12 +210,6 @@
 
   &-background-ghost&-dangerous&-link {
     .button-variant-ghost(@btn-danger-border, transparent);
-  }
-
-  &-background-ghost&-link {
-    .button-variant-ghost(@link-color; transparent);
-
-    color: @btn-link-ghost-color;
   }
 
   &-two-chinese-chars::first-letter {

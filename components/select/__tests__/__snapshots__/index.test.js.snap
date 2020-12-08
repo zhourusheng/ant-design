@@ -22,6 +22,7 @@ exports[`Select Deprecated should ignore mode="combobox" 1`] = `
         readonly=""
         role="combobox"
         style="opacity: 0;"
+        type="search"
         unselectable="on"
         value=""
       />
@@ -38,12 +39,11 @@ exports[`Select Deprecated should ignore mode="combobox" 1`] = `
   >
     <span
       aria-label="down"
-      class="anticon anticon-down"
+      class="anticon anticon-down ant-select-suffix"
       role="img"
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="down"
         fill="currentColor"
         focusable="false"
@@ -83,6 +83,7 @@ exports[`Select Select Custom Icons should support customized icons 1`] = `
         readonly=""
         role="combobox"
         style="opacity: 0;"
+        type="search"
         unselectable="on"
         value=""
       />
@@ -99,12 +100,11 @@ exports[`Select Select Custom Icons should support customized icons 1`] = `
   >
     <span
       aria-label="down"
-      class="anticon anticon-down"
+      class="anticon anticon-down ant-select-suffix"
       role="img"
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="down"
         fill="currentColor"
         focusable="false"
@@ -142,6 +142,7 @@ exports[`Select rtl render component should be rendered correctly in RTL directi
         readonly=""
         role="combobox"
         style="opacity:0"
+        type="search"
         unselectable="on"
         value=""
       />
@@ -158,12 +159,11 @@ exports[`Select rtl render component should be rendered correctly in RTL directi
   >
     <span
       aria-label="down"
-      class="anticon anticon-down"
+      class="anticon anticon-down ant-select-suffix"
       role="img"
     >
       <svg
         aria-hidden="true"
-        class=""
         data-icon="down"
         fill="currentColor"
         focusable="false"

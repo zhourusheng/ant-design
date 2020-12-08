@@ -7,11 +7,11 @@ title:
 
 ## zh-CN
 
-内建了两套主题 `light|dark`，默认 `light`。
+内建了两套主题 `light` 和 `dark`，默认 `light`。
 
 ## en-US
 
-There are two built-in themes: 'light' and 'dark'. The default value is 'light'.
+There are two built-in themes: `light` and `dark`. The default value is `light`.
 
 ```jsx
 import { Menu, Switch } from 'antd';
@@ -61,9 +61,7 @@ class Sider extends React.Component {
             <Menu.Item key="1">Option 1</Menu.Item>
             <Menu.Item key="2">Option 2</Menu.Item>
             <Menu.Item key="3">Option 3</Menu.Item>
-            <Menu.Item key="4" danger>
-              Option 4
-            </Menu.Item>
+            <Menu.Item key="4">Option 4</Menu.Item>
           </SubMenu>
           <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
             <Menu.Item key="5">Option 5</Menu.Item>

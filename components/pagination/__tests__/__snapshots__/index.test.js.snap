@@ -10,9 +10,11 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
     class="ant-pagination-prev ant-pagination-disabled"
     title="Previous Page"
   >
-    <a
+    <button
       class="ant-pagination-item-link"
       disabled=""
+      tabindex="-1"
+      type="button"
     >
       <span
         aria-label="right"
@@ -21,7 +23,6 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
       >
         <svg
           aria-hidden="true"
-          class=""
           data-icon="right"
           fill="currentColor"
           focusable="false"
@@ -34,14 +35,16 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
           />
         </svg>
       </span>
-    </a>
+    </button>
   </li>
   <li
     class="ant-pagination-item ant-pagination-item-0 ant-pagination-disabled ant-pagination-item-disabled"
     tabindex="0"
     title="0"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       0
     </a>
   </li>
@@ -50,9 +53,11 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
     class="ant-pagination-next ant-pagination-disabled"
     title="Next Page"
   >
-    <a
+    <button
       class="ant-pagination-item-link"
       disabled=""
+      tabindex="-1"
+      type="button"
     >
       <span
         aria-label="left"
@@ -61,7 +66,6 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
       >
         <svg
           aria-hidden="true"
-          class=""
           data-icon="left"
           fill="currentColor"
           focusable="false"
@@ -74,7 +78,7 @@ exports[`Pagination rtl render component should be rendered correctly in RTL dir
           />
         </svg>
       </span>
-    </a>
+    </button>
   </li>
 </ul>
 `;
@@ -89,9 +93,11 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     class="ant-pagination-prev ant-pagination-disabled"
     title="Previous Page"
   >
-    <a
+    <button
       class="ant-pagination-item-link"
       disabled=""
+      tabindex="-1"
+      type="button"
     >
       <span
         aria-label="right"
@@ -100,7 +106,6 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
       >
         <svg
           aria-hidden="true"
-          class=""
           data-icon="right"
           fill="currentColor"
           focusable="false"
@@ -113,14 +118,16 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
           />
         </svg>
       </span>
-    </a>
+    </button>
   </li>
   <li
     class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
     tabindex="0"
     title="1"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       1
     </a>
   </li>
@@ -129,7 +136,9 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     tabindex="0"
     title="2"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       2
     </a>
   </li>
@@ -138,7 +147,9 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     tabindex="0"
     title="3"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       3
     </a>
   </li>
@@ -147,7 +158,9 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     tabindex="0"
     title="4"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       4
     </a>
   </li>
@@ -156,7 +169,9 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     tabindex="0"
     title="5"
   >
-    <a>
+    <a
+      rel="nofollow"
+    >
       5
     </a>
   </li>
@@ -166,8 +181,10 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
     tabindex="0"
     title="Next Page"
   >
-    <a
+    <button
       class="ant-pagination-item-link"
+      tabindex="-1"
+      type="button"
     >
       <span
         aria-label="left"
@@ -176,7 +193,6 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
       >
         <svg
           aria-hidden="true"
-          class=""
           data-icon="left"
           fill="currentColor"
           focusable="false"
@@ -189,7 +205,7 @@ exports[`Pagination should be rendered correctly in RTL 1`] = `
           />
         </svg>
       </span>
-    </a>
+    </button>
   </li>
 </ul>
 `;

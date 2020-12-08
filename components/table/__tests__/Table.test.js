@@ -160,6 +160,19 @@ describe('Table', () => {
     );
   });
 
+  it('should not crash when dataSource is array with none-object items', () => {
+    mount(
+      <Table
+        columns={[
+          {
+            title: 'name',
+          },
+        ]}
+        dataSource={['1', 2, undefined, {}, null, true, false, 0]}
+      />,
+    );
+  });
+
   it('prevent touch event', () => {
     const wrapper = mount(
       <Table
@@ -220,5 +233,32 @@ describe('Table', () => {
     wrapper.find('.ant-table-tbody td').forEach(td => {
       expect(td.getDOMNode().attributes.getNamedItem('title')).toBeFalsy();
     });
+  });
+
+  it('warn about rowKey when using index parameter', () => {
+    warnSpy.mockReset();
+    const columns = [
+      {
+        title: 'Name',
+        key: 'name',
+        dataIndex: 'name',
+      },
+    ];
+    mount(<Table columns={columns} rowKey={(record, index) => record + index} />);
+    expect(warnSpy).toBeCalledWith(
+      'Warning: [antd: Table] `index` parameter of `rowKey` function is deprecated. There is no guarantee that it will work as expected.',
+    );
+  });
+  it('not warn about rowKey', () => {
+    warnSpy.mockReset();
+    const columns = [
+      {
+        title: 'Name',
+        key: 'name',
+        dataIndex: 'name',
+      },
+    ];
+    mount(<Table columns={columns} rowKey={record => record.key} />);
+    expect(warnSpy).not.toBeCalled();
   });
 });

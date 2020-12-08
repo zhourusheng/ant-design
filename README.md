@@ -10,7 +10,7 @@
 
 An enterprise-class UI design language and React UI library.
 
-[![CircleCI status][circleci-image]][circleci-url] [![CI status][github-action-image]][github-action-url] [![codecov][codecov-image]][codecov-url] [![NPM version][npm-image]][npm-url] [![NPM downloads][download-image]][download-url]
+[![CI status][github-action-image]][github-action-url] [![codecov][codecov-image]][codecov-url] [![NPM version][npm-image]][npm-url] [![NPM downloads][download-image]][download-url]
 
 [![david deps][david-image]][david-url] [![david devDeps][david-dev-image]][david-dev-url] [![Total alerts][lgtm-image]][lgtm-url] [![FOSSA Status][fossa-image]][fossa-url] [![Issues need help][help-wanted-image]][help-wanted-url]
 
@@ -18,8 +18,6 @@ An enterprise-class UI design language and React UI library.
 
 [npm-image]: http://img.shields.io/npm/v/antd.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/antd
-[circleci-image]: https://img.shields.io/travis/com/ant-design/ant-design.svg?style=flat-square
-[circleci-url]: https://travis-ci.com/ant-design/ant-design
 [github-action-image]: https://github.com/ant-design/ant-design/workflows/test/badge.svg
 [github-action-url]: https://github.com/ant-design/ant-design/actions?query=workflow%3Atest
 [codecov-image]: https://img.shields.io/codecov/c/github/ant-design/ant-design/master.svg?style=flat-square
@@ -110,17 +108,15 @@ Dozens of languages supported in `antd`, see [i18n](https://ant.design/docs/reac
 ## 🔗 Links
 
 - [Home page](https://ant.design/)
-- [Components](https://ant.design/components/overview)
+- [Components Overview](https://ant.design/components/overview)
 - [Ant Design Pro](http://pro.ant.design/)
-- [Ant Design Charts](https://charts.ant.design)
 - [Change Log](CHANGELOG.en-US.md)
 - [rc-components](http://react-component.github.io/)
 - [Mobile UI](http://mobile.ant.design)
+- [Ant Design Pro Components](https://procomponents.ant.design)
+- [Ant Design Charts](https://charts.ant.design)
 - [Ant Design Icons](https://github.com/ant-design/ant-design-icons)
 - [Ant Design Colors](https://github.com/ant-design/ant-design-colors)
-- [Ant Design Pro Layout](https://github.com/ant-design/ant-design-pro-layout)
-- [Ant Design Pro Blocks](https://github.com/ant-design/pro-blocks)
-- [Dark Theme](https://github.com/ant-design/ant-design-dark-theme)
 - [Landing Pages](https://landing.ant.design)
 - [Motion](https://motion.ant.design)
 - [Scaffold Market](http://scaffold.ant.design)
@@ -128,7 +124,6 @@ Dozens of languages supported in `antd`, see [i18n](https://ant.design/docs/reac
 - [Versioning Release Note](https://github.com/ant-design/ant-design/wiki/%E8%BD%AE%E5%80%BC%E8%A7%84%E5%88%99%E5%92%8C%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83%E6%B5%81%E7%A8%8B)
 - [FAQ](https://ant.design/docs/react/faq)
 - [CodeSandbox Template](https://u.ant.design/codesandbox-repro) for bug reports
-- [Awesome Ant Design](https://github.com/websemantics/awesome-ant-design)
 - [Customize Theme](https://ant.design/docs/react/customize-theme)
 - [How to Apply for Being A Collaborator](https://github.com/ant-design/ant-design/wiki/Collaborators#how-to-apply-for-being-a-collaborator)
 

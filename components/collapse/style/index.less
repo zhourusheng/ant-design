@@ -35,11 +35,10 @@
         .iconfont-mixin();
 
         position: absolute;
-        top: 50%;
+        top: ceil(@padding-sm + (@font-size-base * @line-height-base - @font-size-base) / 2);
         left: @collapse-header-arrow-left;
         display: inline-block;
         font-size: @font-size-sm;
-        transform: translateY(-50%);
 
         & svg {
           transition: transform 0.24s;
@@ -52,6 +51,13 @@
 
       &:focus {
         outline: none;
+      }
+    }
+
+    .@{collapse-prefix-cls}-header-collapsible-only {
+      cursor: default;
+      .@{collapse-prefix-cls}-header-text {
+        cursor: pointer;
       }
     }
 
@@ -77,12 +83,7 @@
     }
   }
 
-  &-anim-active {
-    transition: height 0.2s @ease-out;
-  }
-
   &-content {
-    overflow: hidden;
     color: @text-color;
     background-color: @collapse-content-bg;
     border-top: @border-width-base @border-style-base @border-color-base;
@@ -91,7 +92,7 @@
       padding: @collapse-content-padding;
     }
 
-    &-inactive {
+    &-hidden {
       display: none;
     }
   }
@@ -123,6 +124,22 @@
 
   &-borderless > &-item > &-content > &-content-box {
     padding-top: 4px;
+  }
+
+  &-ghost {
+    background-color: transparent;
+    border: 0;
+    > .@{collapse-prefix-cls}-item {
+      border-bottom: 0;
+      > .@{collapse-prefix-cls}-content {
+        background-color: transparent;
+        border-top: 0;
+        > .@{collapse-prefix-cls}-content-box {
+          padding-top: 12px;
+          padding-bottom: 12px;
+        }
+      }
+    }
   }
 
   & &-item-disabled > &-header {

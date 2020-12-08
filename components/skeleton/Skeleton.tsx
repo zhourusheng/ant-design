@@ -7,10 +7,10 @@ import Element from './Element';
 import SkeletonAvatar, { AvatarProps } from './Avatar';
 import SkeletonButton from './Button';
 import SkeletonInput from './Input';
+import SkeletonImage from './Image';
 
 /* This only for skeleton internal. */
-interface SkeletonAvatarProps extends Omit<AvatarProps, 'active'> {
-}
+interface SkeletonAvatarProps extends Omit<AvatarProps, 'active'> {}
 
 export interface SkeletonProps {
   active?: boolean;
@@ -141,12 +141,16 @@ const Skeleton = (props: SkeletonProps) => {
         );
       }
 
-      const cls = classNames(prefixCls, className, {
-        [`${prefixCls}-with-avatar`]: hasAvatar,
-        [`${prefixCls}-active`]: active,
-        [`${prefixCls}-rtl`]: direction === 'rtl',
-        [`${prefixCls}-round`]: round,
-      });
+      const cls = classNames(
+        prefixCls,
+        {
+          [`${prefixCls}-with-avatar`]: hasAvatar,
+          [`${prefixCls}-active`]: active,
+          [`${prefixCls}-rtl`]: direction === 'rtl',
+          [`${prefixCls}-round`]: round,
+        },
+        className,
+      );
 
       return (
         <div className={cls}>
@@ -170,5 +174,6 @@ Skeleton.defaultProps = {
 Skeleton.Button = SkeletonButton;
 Skeleton.Avatar = SkeletonAvatar;
 Skeleton.Input = SkeletonInput;
+Skeleton.Image = SkeletonImage;
 
 export default Skeleton;

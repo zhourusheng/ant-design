@@ -122,18 +122,16 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
     );
 
     // Disabled Date
-    const mergedDisabledDate = React.useMemo(() => {
-      if (validRange) {
-        return (date: DateType) => {
-          return (
-            generateConfig.isAfter(validRange[0], date) ||
+    const mergedDisabledDate = React.useCallback(
+      (date: DateType) => {
+        const notInRange = validRange
+          ? generateConfig.isAfter(validRange[0], date) ||
             generateConfig.isAfter(date, validRange[1])
-          );
-        };
-      }
-
-      return disabledDate;
-    }, [disabledDate, validRange]);
+          : false;
+        return notInRange || !!disabledDate?.(date);
+      },
+      [disabledDate, validRange],
+    );
 
     // ====================== Events ======================
     const triggerPanelChange = (date: DateType, newMode: CalendarMode) => {
@@ -243,11 +241,15 @@ function generateCalendar<DateType>(generateConfig: GenerateConfig<DateType>) {
         {(mergedLocale: any) => {
           return (
             <div
-              className={classNames(calendarPrefixCls, className, {
-                [`${calendarPrefixCls}-full`]: fullscreen,
-                [`${calendarPrefixCls}-mini`]: !fullscreen,
-                [`${calendarPrefixCls}-rtl`]: direction === 'rtl',
-              })}
+              className={classNames(
+                calendarPrefixCls,
+                {
+                  [`${calendarPrefixCls}-full`]: fullscreen,
+                  [`${calendarPrefixCls}-mini`]: !fullscreen,
+                  [`${calendarPrefixCls}-rtl`]: direction === 'rtl',
+                },
+                className,
+              )}
               style={style}
             >
               {headerRender ? (
